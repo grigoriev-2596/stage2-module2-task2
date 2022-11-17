@@ -2,7 +2,6 @@ package com.example.servlet;
 
 import com.example.Users;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -38,9 +37,15 @@ public class LoginServlet extends HttpServlet {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
         List<String> users = Users.getInstance().getUsers();
+        HttpSession session = request.getSession(false);
+
+        if (session != null && session.getAttribute("user") != null) {
+            response.sendRedirect("/user/hello.jsp");
+            return;
+        }
+
         if (users.contains(login) && !password.trim().isEmpty()) {
             request.getSession().setAttribute("user", login);
-
             response.sendRedirect("/user/hello.jsp");
         } else {
             getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);

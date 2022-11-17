@@ -11,25 +11,13 @@ import java.io.IOException;
 @WebFilter("/user/*")
 public class AuthFilter implements Filter {
 
-    private ServletContext context;
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        Filter.super.init(filterConfig);
-        context = filterConfig.getServletContext();
-        context.log("AuthFilter initialized");
-    }
-
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpReq = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResp = (HttpServletResponse) servletResponse;
 
-        context.log("Requested resource " + httpReq.getRequestURI());
-
         HttpSession session = httpReq.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            context.log("Unauthorized access request");
             httpResp.sendRedirect("/login.jsp");
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
@@ -37,8 +25,4 @@ public class AuthFilter implements Filter {
 
     }
 
-    @Override
-    public void destroy() {
-        Filter.super.destroy();
-    }
 }
