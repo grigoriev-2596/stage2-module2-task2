@@ -37,14 +37,8 @@ public class LoginServlet extends HttpServlet {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
         List<String> users = Users.getInstance().getUsers();
-        HttpSession session = request.getSession(false);
 
-        if (session != null && session.getAttribute("user") != null) {
-            response.sendRedirect("/user/hello.jsp");
-            return;
-        }
-
-        if (users.contains(login) && !password.trim().isEmpty()) {
+        if (users.contains(login) && !password.isEmpty()) {
             request.getSession().setAttribute("user", login);
             response.sendRedirect("/user/hello.jsp");
         } else {
