@@ -30,9 +30,7 @@ public class AuthFilter implements Filter {
         HttpSession session = httpReq.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             context.log("Unauthorized access request");
-
-            context.getRequestDispatcher("/user/hello.jsp").forward(httpReq, httpResp);
-//            httpResp.sendRedirect("/login.jsp");
+            httpResp.sendRedirect("/login.jsp");
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
         }
