@@ -2,6 +2,7 @@ package com.example.servlet;
 
 import com.example.Users;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,26 +17,32 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-         HttpSession session = request.getSession(false);
-         if (session == null || session.getAttribute("user") == null) {
-             response.sendRedirect("/login.jsp");
-         } else {
-             response.sendRedirect("/user/hello.jsp");
-         }
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            //response.sendRedirect("/login.jsp");
+            getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
+        } else {
+            getServletContext().getRequestDispatcher("/user/hello.jsp").forward(request, response);
+//             response.sendRedirect("/user/hello.jsp");
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
         List<String> users = Users.getInstance().getUsers();
         if (users.contains(login) && !password.trim().isEmpty()) {
             request.getSession().setAttribute("user", login);
-            response.sendRedirect("/user/hello.jsp");
+
+            getServletContext().getRequestDispatcher("/user/hello.jsp").forward(request, response);
+//            response.sendRedirect("/user/hello.jsp");
         } else {
-            response.sendRedirect("/login.jsp");
+            getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
+
+//            response.sendRedirect("/login.jsp");
         }
     }
 }
